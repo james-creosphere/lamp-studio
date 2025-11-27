@@ -1,0 +1,203 @@
+import type { PatternParams, PatternShape } from "../types/PatternParams";
+
+type Props = {
+  pattern: PatternParams;
+  setPattern: (p: PatternParams) => void;
+};
+
+export function PatternGenerator({ pattern, setPattern }: Props) {
+  const updatePattern = (key: keyof PatternParams, val: number | PatternShape | boolean) =>
+    setPattern({ ...pattern, [key]: val });
+
+  const toggleInvert = () => {
+    setPattern({ ...pattern, inverted: !pattern.inverted });
+  };
+
+  return (
+    <div style={{ padding: 16, width: 300 }}>
+      <h2>Pattern Generator</h2>
+      
+      <div style={{ marginBottom: 16 }}>
+        <button
+          onClick={toggleInvert}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: pattern.inverted ? "#646cff" : "#f0f0f0",
+            color: pattern.inverted ? "#fff" : "#333",
+            border: "1px solid #ddd",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "500"
+          }}
+        >
+          {pattern.inverted ? "✓ Inverted" : "Invert Colors"}
+        </button>
+      </div>
+      
+      <h3>Primary Shape</h3>
+      <div style={{ marginBottom: 16 }}>
+        {(["circle", "square", "triangle", "hexagon", "star", "cross"] as PatternShape[]).map((shape) => (
+          <label key={shape} style={{ display: "block", marginBottom: 4 }}>
+            <input
+              type="radio"
+              name="patternShape"
+              value={shape}
+              checked={pattern.shape === shape}
+              onChange={(e) => updatePattern("shape", e.target.value as PatternShape)}
+            />
+            {" "}{shape.charAt(0).toUpperCase() + shape.slice(1)}
+          </label>
+        ))}
+      </div>
+
+      <h3>Pattern Parameters</h3>
+      
+      Steps: 
+      <input 
+        type="range" 
+        min="1" 
+        max="50" 
+        value={pattern.steps} 
+        onChange={(e) => updatePattern("steps", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.steps}</span>
+      <br />
+
+      Size: 
+      <input 
+        type="range" 
+        min="5" 
+        max="50" 
+        step="1" 
+        value={pattern.size} 
+        onChange={(e) => updatePattern("size", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.size}</span>
+      <br />
+
+      <h3>Scaling</h3>
+      Scale Start: 
+      <input 
+        type="range" 
+        min="0.1" 
+        max="2" 
+        step="0.1" 
+        value={pattern.scaleStart} 
+        onChange={(e) => updatePattern("scaleStart", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.scaleStart.toFixed(1)}</span>
+      <br />
+
+      Scale Factor: 
+      <input 
+        type="range" 
+        min="0.8" 
+        max="1.2" 
+        step="0.01" 
+        value={pattern.scaleFactor} 
+        onChange={(e) => updatePattern("scaleFactor", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.scaleFactor.toFixed(2)}</span>
+      <br />
+
+      <h3>Rotation</h3>
+      Rotation Start: 
+      <input 
+        type="range" 
+        min="0" 
+        max="360" 
+        step="1" 
+        value={pattern.rotationStart} 
+        onChange={(e) => updatePattern("rotationStart", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.rotationStart}°</span>
+      <br />
+
+      Rotation Step: 
+      <input 
+        type="range" 
+        min="-45" 
+        max="45" 
+        step="1" 
+        value={pattern.rotationStep} 
+        onChange={(e) => updatePattern("rotationStep", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.rotationStep}°</span>
+      <br />
+
+      <h3>Drifting</h3>
+      Drift X: 
+      <input 
+        type="range" 
+        min="-10" 
+        max="10" 
+        step="0.5" 
+        value={pattern.driftX} 
+        onChange={(e) => updatePattern("driftX", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.driftX.toFixed(1)}</span>
+      <br />
+
+      Drift Y: 
+      <input 
+        type="range" 
+        min="-10" 
+        max="10" 
+        step="0.5" 
+        value={pattern.driftY} 
+        onChange={(e) => updatePattern("driftY", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.driftY.toFixed(1)}</span>
+      <br />
+
+      <h3>Spiral</h3>
+      Spiral Amount: 
+      <input 
+        type="range" 
+        min="-30" 
+        max="30" 
+        step="0.5" 
+        value={pattern.spiralAmount} 
+        onChange={(e) => updatePattern("spiralAmount", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.spiralAmount.toFixed(1)}°</span>
+      <br />
+
+      {(pattern.shape === "star") && (
+        <>
+          <h3>Star Options</h3>
+          Star Points: 
+          <input 
+            type="range" 
+            min="3" 
+            max="12" 
+            step="1" 
+            value={pattern.starPoints || 5} 
+            onChange={(e) => updatePattern("starPoints", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.starPoints || 5}</span>
+          <br />
+        </>
+      )}
+
+      {(pattern.shape === "cross") && (
+        <>
+          <h3>Cross Options</h3>
+          Cross Thickness: 
+          <input 
+            type="range" 
+            min="0.1" 
+            max="0.5" 
+            step="0.05" 
+            value={pattern.crossThickness || 0.2} 
+            onChange={(e) => updatePattern("crossThickness", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{(pattern.crossThickness || 0.2).toFixed(2)}</span>
+          <br />
+        </>
+      )}
+    </div>
+  );
+}
+
