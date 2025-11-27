@@ -1,4 +1,4 @@
-import type { PatternParams, PatternShape } from "../types/PatternParams";
+import type { PatternParams, PatternShape, EasingType } from "../types/PatternParams";
 
 type Props = {
   pattern: PatternParams;
@@ -6,7 +6,7 @@ type Props = {
 };
 
 export function PatternGenerator({ pattern, setPattern }: Props) {
-  const updatePattern = (key: keyof PatternParams, val: number | PatternShape | boolean) =>
+  const updatePattern = (key: keyof PatternParams, val: number | PatternShape | boolean | EasingType) =>
     setPattern({ ...pattern, [key]: val });
 
   const toggleInvert = () => {
@@ -197,6 +197,68 @@ export function PatternGenerator({ pattern, setPattern }: Props) {
           <br />
         </>
       )}
+
+      <h3>Fractal Body</h3>
+      Height: 
+      <input 
+        type="range" 
+        min="0" 
+        max="400" 
+        step="10" 
+        value={pattern.height} 
+        onChange={(e) => updatePattern("height", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.height}</span>
+      <br />
+
+      Twist: 
+      <input 
+        type="range" 
+        min="0" 
+        max="720" 
+        step="10" 
+        value={pattern.twist} 
+        onChange={(e) => updatePattern("twist", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.twist}°</span>
+      <br />
+
+      Taper: 
+      <input 
+        type="range" 
+        min="0" 
+        max="1" 
+        step="0.05" 
+        value={pattern.taper} 
+        onChange={(e) => updatePattern("taper", +e.target.value)} 
+      />
+      <span style={{ marginLeft: 8 }}>{pattern.taper.toFixed(2)}</span>
+      <br />
+
+      <label style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
+        <input
+          type="checkbox"
+          checked={pattern.normalize}
+          onChange={(e) => updatePattern("normalize", e.target.checked)}
+          style={{ marginRight: 8 }}
+        />
+        Normalize Vertices
+      </label>
+
+      <div style={{ marginTop: 8 }}>
+        <label>
+          Easing: 
+          <select
+            value={pattern.easing}
+            onChange={(e) => updatePattern("easing", e.target.value as any)}
+            style={{ marginLeft: 8, padding: "4px 8px" }}
+          >
+            <option value="linear">Linear</option>
+            <option value="easeOut">Ease Out</option>
+            <option value="easeInOut">Ease In Out</option>
+          </select>
+        </label>
+      </div>
     </div>
   );
 }

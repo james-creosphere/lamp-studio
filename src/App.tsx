@@ -40,6 +40,11 @@ export default function App() {
     spiralAmount: 0,
     size: 20,
     inverted: false,
+    height: 200,
+    twist: 0,
+    taper: 0,
+    normalize: false,
+    easing: "linear",
     starPoints: 5,
     crossThickness: 0.2
   });
