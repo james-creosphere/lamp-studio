@@ -6,12 +6,15 @@ import { createFractalBody } from "../geometry/fractalBodyGenerator";
 import type { InterpolatableShape } from "../geometry/crossSections/crossSectionTypes";
 
 type Props = {
-  polygons2D: InterpolatableShape[];
+  polygons2D: (InterpolatableShape | null)[];
   height: number;
   twist: number;
   taper: number;
   normalize: boolean;
   easing?: (t: number) => number;
+  enableHoles?: boolean;
+  holeFrequency?: number;
+  holeScale?: number;
 };
 
 /**
@@ -46,7 +49,10 @@ export function FractalBodyCanvas({
   twist,
   taper,
   normalize,
-  easing
+  easing,
+  enableHoles = false,
+  holeFrequency = 2,
+  holeScale = 0.35
 }: Props) {
   // Generate geometry using useMemo for performance
   const geometry = useMemo(() => {
@@ -59,9 +65,12 @@ export function FractalBodyCanvas({
       twist,
       taper,
       normalize,
-      easing
+      easing,
+      enableHoles,
+      holeFrequency,
+      holeScale
     });
-  }, [polygons2D, height, twist, taper, normalize, easing]);
+  }, [polygons2D, height, twist, taper, normalize, easing, enableHoles, holeFrequency, holeScale]);
 
   // Compute bounds for centering and scaling
   const { center, size } = useMemo(() => {

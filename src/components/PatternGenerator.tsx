@@ -259,6 +259,138 @@ export function PatternGenerator({ pattern, setPattern }: Props) {
           </select>
         </label>
       </div>
+
+      <h3>Holes</h3>
+      <label style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
+        <input
+          type="checkbox"
+          checked={pattern.enableHoles}
+          onChange={(e) => updatePattern("enableHoles", e.target.checked)}
+          style={{ marginRight: 8 }}
+        />
+        Enable Holes
+      </label>
+
+      {pattern.enableHoles && (
+        <>
+          Hole Frequency: 
+          <input 
+            type="range" 
+            min="1" 
+            max="5" 
+            step="1" 
+            value={pattern.holeFrequency} 
+            onChange={(e) => updatePattern("holeFrequency", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.holeFrequency}</span>
+          <br />
+
+          Hole Scale: 
+          <input 
+            type="range" 
+            min="0.1" 
+            max="0.9" 
+            step="0.05" 
+            value={pattern.holeScale} 
+            onChange={(e) => updatePattern("holeScale", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.holeScale.toFixed(2)}</span>
+          <br />
+        </>
+      )}
+
+      <h3>Spine Mode</h3>
+      <label style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
+        <input
+          type="checkbox"
+          checked={pattern.useSpineMode}
+          onChange={(e) => updatePattern("useSpineMode", e.target.checked)}
+          style={{ marginRight: 8 }}
+        />
+        Use Spine Generation (Base Points)
+      </label>
+
+      {pattern.useSpineMode && (
+        <>
+          Start Radius: 
+          <input 
+            type="range" 
+            min="5" 
+            max="50" 
+            step="1" 
+            value={pattern.startRadius} 
+            onChange={(e) => updatePattern("startRadius", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.startRadius}</span>
+          <br />
+
+          End Radius: 
+          <input 
+            type="range" 
+            min="1" 
+            max="30" 
+            step="1" 
+            value={pattern.endRadius} 
+            onChange={(e) => updatePattern("endRadius", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.endRadius}</span>
+          <br />
+
+          Segment Length: 
+          <input 
+            type="range" 
+            min="5" 
+            max="50" 
+            step="1" 
+            value={pattern.segmentLength} 
+            onChange={(e) => updatePattern("segmentLength", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.segmentLength}</span>
+          <br />
+
+          Radius Variation: 
+          <input 
+            type="range" 
+            min="0" 
+            max="1" 
+            step="0.1" 
+            value={pattern.radiusVariation} 
+            onChange={(e) => updatePattern("radiusVariation", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.radiusVariation.toFixed(1)}</span>
+          <br />
+        </>
+      )}
+
+      <h3>Shell Openings</h3>
+      <label style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
+        <input
+          type="checkbox"
+          checked={pattern.removeShapes}
+          onChange={(e) => updatePattern("removeShapes", e.target.checked)}
+          style={{ marginRight: 8 }}
+        />
+        Remove Alternating Shapes
+      </label>
+
+      {pattern.removeShapes && (
+        <>
+          Remove Frequency: 
+          <input 
+            type="range" 
+            min="1" 
+            max="5" 
+            step="1" 
+            value={pattern.removeFrequency} 
+            onChange={(e) => updatePattern("removeFrequency", +e.target.value)} 
+          />
+          <span style={{ marginLeft: 8 }}>{pattern.removeFrequency}</span>
+          <br />
+          <span style={{ fontSize: "0.9em", color: "#666", marginTop: 4, display: "block" }}>
+            Removes shapes to create openings for light
+          </span>
+        </>
+      )}
     </div>
   );
 }

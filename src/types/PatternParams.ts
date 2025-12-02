@@ -20,6 +20,19 @@ export interface PatternParams {
   taper: number;           // Taper amount (0-1)
   normalize: boolean;      // Normalize vertex count
   easing: EasingType;      // Easing function type
+  // Hole parameters
+  enableHoles: boolean;    // Enable hole generation
+  holeFrequency: number;   // Frequency of holes (1-5)
+  holeScale: number;       // Scale of holes (0.1-0.9)
+  // Shell opening parameters
+  removeShapes: boolean;   // Remove alternating shapes to create openings
+  removeFrequency: number; // Frequency of shape removal (1-5)
+  // Spine generation mode
+  useSpineMode: boolean;   // Use spine-based generation instead of pattern-based
+  startRadius: number;     // Starting radius/thickness for spine
+  endRadius: number;       // Ending radius/thickness for spine
+  segmentLength: number;   // Length of each spine segment
+  radiusVariation: number; // Random variation in radius (0-1)
   // Shape-specific parameters
   starPoints?: number;     // Number of points for star (default 5)
   crossThickness?: number; // Thickness for cross shape

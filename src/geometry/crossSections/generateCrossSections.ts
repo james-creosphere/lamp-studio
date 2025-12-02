@@ -5,7 +5,7 @@ import { resamplePolygon } from "./resamplePolygon";
  * Options for generating cross sections
  */
 export interface GenerateCrossSectionsOptions {
-  baseShapes: InterpolatableShape[]; // ordered from largest to smallest
+  baseShapes: (InterpolatableShape | null)[]; // ordered from largest to smallest, null = removed/empty
   easing?: (t: number) => number; // optional curve for interpolation
   normalizeVertexCount?: boolean; // if true, resample vertices
 }
@@ -69,32 +69,35 @@ export function generateCrossSections(
     return [];
   }
 
-  // Create array with shapes and their areas for sorting
-  const shapesWithAreas = baseShapes.map(shape => ({
-    shape,
-    area: calculateArea(shape.points)
-  }));
-
-  // Sort shapes from largest to smallest area (bottom to top)
-  // Largest area = bottom (t=0), smallest area = top (t=1)
-  shapesWithAreas.sort((a, b) => b.area - a.area);
+  // Process shapes in original order (don't sort when removing shapes)
+  // First, collect valid shapes and calculate max vertex count if normalizing
+  const validShapes = baseShapes.filter((shape): shape is InterpolatableShape => shape !== null);
+  
+  if (validShapes.length === 0) {
+    return [];
+  }
 
   // Normalize vertex count if requested
   let processedShapes: InterpolatableShape[];
   if (normalizeVertexCount) {
-    const maxVertexCount = getMaxVertexCount(baseShapes);
-    processedShapes = shapesWithAreas.map(({ shape }) => ({
+    const maxVertexCount = getMaxVertexCount(validShapes);
+    processedShapes = validShapes.map(shape => ({
       points: resamplePolygon(shape.points, maxVertexCount)
     }));
   } else {
-    processedShapes = shapesWithAreas.map(({ shape }) => shape);
+    processedShapes = validShapes;
   }
 
   // Generate cross sections with normalized t values
-  const n = processedShapes.length;
-  const crossSections: CrossSection2D[] = processedShapes.map((shape, i) => {
+  // Include empty sections for removed shapes to maintain spacing and create openings
+  const n = baseShapes.length; // Use original count for t calculation
+  const crossSections: CrossSection2D[] = [];
+  
+  let validShapeIndex = 0;
+  for (let i = 0; i < baseShapes.length; i++) {
+    const originalShape = baseShapes[i];
+    
     // Normalize t to 0..1: i/(n-1)
-    // When n=1, t=0; when n>1, first shape (i=0) has t=0, last shape (i=n-1) has t=1
     let t = n > 1 ? i / (n - 1) : 0;
     
     // Apply easing function if provided
@@ -102,11 +105,23 @@ export function generateCrossSections(
       t = easing(t);
     }
 
-    return {
-      points: shape.points,
-      t
-    };
-  });
+    if (originalShape === null) {
+      // Create empty section (no outer polygon) - this creates an opening
+      crossSections.push({
+        outer: [],
+        holes: [],
+        t
+      });
+    } else {
+      // Use the processed shape (potentially normalized)
+      crossSections.push({
+        outer: processedShapes[validShapeIndex].points,
+        holes: [],
+        t
+      });
+      validShapeIndex++;
+    }
+  }
 
   return crossSections;
 }

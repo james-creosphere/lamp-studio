@@ -19,3 +19,4 @@ export function getEasingFunction(type: EasingType): (t: number) => number {
   return easingFunctions[type];
 }
 
+
